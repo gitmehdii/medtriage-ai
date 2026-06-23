@@ -25,7 +25,7 @@ def analyze_image_bytes(image_bytes):
 
     response = requests.post(url, headers=headers, params=params, data=image_bytes)
     print("Status:", response.status_code)
-    print("Response:", response.text)  # Ajoute cette ligne
+    print("Response:", response.text)
     response.raise_for_status()
     return response.json()
 
