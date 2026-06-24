@@ -7,6 +7,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     app_name: str = "MedTriageAI Agent"
     app_env: str = "local"
+    agent_port: int = 8000
 
     llm_provider: str = Field(default="none", pattern="^(ollama|gemini|none)$")
     ollama_base_url: str = "http://localhost:11434"

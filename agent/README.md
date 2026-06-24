@@ -12,7 +12,7 @@ python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
-uvicorn medtriage_agent.api:app --reload
+python main.py
 ```
 
 Open:
@@ -20,6 +20,15 @@ Open:
 ```text
 http://localhost:8000/docs
 ```
+
+## Local ports
+
+| Service | Port | URL |
+|---|---:|---|
+| Frontend | 3000 | `http://localhost:3000` |
+| Agent IA | 8000 | `http://localhost:8000` |
+| Computer Vision | 8001 | `http://localhost:8001` |
+| ML Model | 8002 | `http://localhost:8002` |
 
 ## Main endpoint
 
