@@ -1,9 +1,15 @@
 const URGENCE_STYLES = {
-  vert: {
+  green: {
     label: 'Non urgent',
     card: 'border-emerald-200 bg-emerald-50',
     badge: 'bg-emerald-600 text-white',
     icon: '🟢',
+  },
+  yellow: {
+    label: 'Vigilance',
+    card: 'border-yellow-200 bg-yellow-50',
+    badge: 'bg-yellow-500 text-white',
+    icon: '🟡',
   },
   orange: {
     label: 'Consultation à prévoir',
@@ -11,7 +17,7 @@ const URGENCE_STYLES = {
     badge: 'bg-amber-500 text-white',
     icon: '🟠',
   },
-  rouge: {
+  red: {
     label: 'Urgence',
     card: 'border-red-200 bg-red-50',
     badge: 'bg-red-600 text-white',
@@ -20,7 +26,8 @@ const URGENCE_STYLES = {
 }
 
 export default function ResultCard({ result }) {
-  const style = URGENCE_STYLES[result.urgence] ?? URGENCE_STYLES.vert
+  const style = URGENCE_STYLES[result.urgence] ?? URGENCE_STYLES.green
+  const hasOpenQuestions = result.questions_complementaires?.length > 0
 
   return (
     <div className={`rounded-2xl border p-6 shadow-sm ${style.card}`}>
@@ -60,6 +67,33 @@ export default function ResultCard({ result }) {
             ))}
           </ul>
         </div>
+      )}
+
+      {hasOpenQuestions && (
+        <div className="mt-5 rounded-xl bg-white/70 p-4 ring-1 ring-slate-200">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            Pour affiner l'évaluation
+          </h3>
+          <ul className="mt-2 space-y-1.5">
+            {result.questions_complementaires.map((question, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                <span className="mt-0.5 text-slate-400" aria-hidden>
+                  •
+                </span>
+                {question}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {result.justification && (
+        <details className="mt-5 text-sm text-slate-600">
+          <summary className="cursor-pointer font-medium text-slate-500 hover:text-slate-700">
+            Voir la justification
+          </summary>
+          <p className="mt-2 leading-relaxed">{result.justification}</p>
+        </details>
       )}
     </div>
   )
