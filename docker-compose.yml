@@ -24,9 +24,6 @@ services:
     env_file:
       - path: .env
         required: false
-    environment:
-      AZURE_ML_KEY: ${AZURE_ML_KEY}
-      AZURE_ML_ENDPOINT: ${AZURE_ML_ENDPOINT}
     networks:
       - medtriage-network
     restart: unless-stopped
