@@ -41,16 +41,16 @@ def parse_result(raw):
     all_tags = " ".join(tags).lower() + " " + caption.lower()
 
     if any(k in all_tags for k in urgent_keywords):
-        gravite = "elevee"
+        urgence = "rouge"
     elif any(k in all_tags for k in moderate_keywords):
-        gravite = "moderee"
+        urgence = "orange"
     else:
-        gravite = "faible"
+        urgence = "vert"
 
     return {
         "description": caption,
         "tags": tags,
-        "gravite": gravite
+        "urgence": urgence
     }
 
 
