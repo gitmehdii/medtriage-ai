@@ -38,3 +38,14 @@ async def test_orchestrator_promotes_external_module_urgency():
     response = await orchestrator.triage(TriageRequest(symptomes="fatigue légère depuis hier"))
 
     assert response.urgence == UrgencyLevel.orange
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_returns_conversation_id():
+    orchestrator = TriageOrchestrator(StubModules(), DeterministicProvider())
+
+    response = await orchestrator.triage(
+        TriageRequest(symptomes="J'ai de la fièvre", conversation_id="conversation-1")
+    )
+
+    assert response.conversation_id == "conversation-1"

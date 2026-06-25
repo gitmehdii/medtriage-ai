@@ -45,6 +45,31 @@ Example body:
 }
 ```
 
+## Chat with context
+
+```http
+POST /chat
+```
+
+The backend stores the recent conversation context by `conversation_id`. The frontend should reuse the `conversation_id` returned by the first response for the next messages.
+
+First message:
+
+```json
+{
+  "message": "J'ai de la fièvre"
+}
+```
+
+Follow-up message:
+
+```json
+{
+  "conversation_id": "<returned conversation_id>",
+  "message": "depuis 2 jours"
+}
+```
+
 ## Microsoft Agent Framework boundary
 
 `medtriage_agent.ms_agent` isolates the future Microsoft Agent Framework integration. The medical triage workflow itself stays in `orchestrator.py`, so it can be tested without a specific framework runtime.

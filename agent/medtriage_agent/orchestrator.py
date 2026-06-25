@@ -41,6 +41,7 @@ class TriageOrchestrator:
             )
 
         return TriageResponse(
+            conversation_id=request.conversation_id,
             urgence=urgency,
             orientation=orientation,
             delai=delay,

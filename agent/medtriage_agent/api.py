@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from medtriage_agent.config import get_settings
+from medtriage_agent.conversation import InMemoryConversationStore
 from medtriage_agent.llm import build_llm_provider
 from medtriage_agent.module_clients import ExternalModuleClient
 from medtriage_agent.ms_agent import MedTriageAgent, build_ms_agent_runtime
@@ -14,6 +15,7 @@ modules = ExternalModuleClient(settings)
 llm = build_llm_provider(settings)
 orchestrator = TriageOrchestrator(modules=modules, llm=llm)
 agent = build_ms_agent_runtime(MedTriageAgent(orchestrator))
+conversation_store = InMemoryConversationStore(max_turns=settings.max_conversation_turns)
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
 
@@ -37,9 +39,18 @@ async def triage(request: TriageRequest) -> TriageResponse:
 
 @app.post("/chat", response_model=TriageResponse)
 async def chat(request: ChatRequest) -> TriageResponse:
-    triage_request = TriageRequest(
-        symptomes=request.message,
-        photo_base64=request.photo_base64,
-        conversation_id=request.conversation_id,
+    conversation = conversation_store.get_or_create(request.conversation_id)
+    symptom_context = conversation_store.build_symptom_context(
+        conversation=conversation,
+        current_message=request.message,
+        provided_history=request.history,
     )
-    return await agent.handle_triage(triage_request)
+    triage_request = TriageRequest(
+        symptomes=symptom_context,
+        photo_base64=request.photo_base64,
+        conversation_id=conversation.conversation_id,
+    )
+    response = await agent.handle_triage(triage_request)
+    conversation_store.add_turn(conversation.conversation_id, "user", request.message)
+    conversation_store.add_turn(conversation.conversation_id, "assistant", response.message)
+    return response

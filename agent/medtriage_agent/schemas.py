@@ -52,6 +52,7 @@ class ModuleSignal(BaseModel):
 
 
 class TriageResponse(BaseModel):
+    conversation_id: str | None = None
     urgence: UrgencyLevel
     orientation: str
     delai: str
