@@ -23,3 +23,20 @@ def test_store_creates_conversation_id_when_missing():
     conversation = store.get_or_create()
 
     assert conversation.conversation_id
+
+
+def test_store_tracks_answered_followup_questions():
+    store = InMemoryConversationStore()
+    conversation = store.get_or_create("conv-1")
+    store.set_pending_followups(
+        "conv-1",
+        [
+            "Avez-vous des antécédents médicaux importants ?",
+            "Prenez-vous actuellement des médicaments ?",
+        ],
+    )
+
+    store.record_user_reply("conv-1", "non")
+
+    assert conversation.answered_followups == {"antecedents", "medications"}
+    assert conversation.pending_followups == []

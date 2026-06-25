@@ -49,8 +49,8 @@ class ExternalModuleClient:
             source=source,
             available=True,
             urgency=_parse_urgency(data.get("urgence") or data.get("urgency")),
-            confidence=data.get("confidence"),
-            summary=data.get("summary") or data.get("justification"),
+            confidence=data.get("confidence") or data.get("score"),
+            summary=data.get("summary") or data.get("justification") or _build_fallback_summary(source, data),
             raw=data,
         )
 
@@ -69,3 +69,22 @@ def _parse_urgency(value: Any) -> UrgencyLevel | None:
         "rouge": UrgencyLevel.red,
     }
     return mapping.get(normalized)
+
+
+def _build_fallback_summary(source: str, data: dict[str, Any]) -> str | None:
+    urgency = data.get("urgence") or data.get("urgency")
+    orientation = data.get("orientation")
+    delay = data.get("delai") or data.get("delay")
+    confidence = data.get("confidence") or data.get("score")
+
+    if urgency is None:
+        return None
+
+    details = [f"{source} classe le cas en {urgency}"]
+    if confidence is not None:
+        details.append(f"score {confidence}")
+    if orientation:
+        details.append(f"orientation {orientation}")
+    if delay:
+        details.append(f"délai {delay}")
+    return ", ".join(details)

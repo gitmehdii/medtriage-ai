@@ -33,9 +33,26 @@ class DeterministicProvider(LLMProvider):
         question_text = ""
         if questions:
             question_text = " Questions utiles: " + " ".join(questions)
+
+        level_labels = {
+            UrgencyLevel.green: "vert",
+            UrgencyLevel.yellow: "jaune",
+            UrgencyLevel.orange: "orange",
+            UrgencyLevel.red: "rouge",
+        }
+
+        if urgency is UrgencyLevel.red:
+            action = "Appelez le 15 ou le 112 maintenant, ou faites appeler quelqu'un près de vous."
+        elif urgency is UrgencyLevel.orange:
+            action = "Un avis médical rapide est recommandé, plus tôt si la douleur augmente ou si de nouveaux signes apparaissent."
+        elif urgency is UrgencyLevel.yellow:
+            action = "Surveillez l'évolution et demandez un avis médical si les symptômes persistent ou s'aggravent."
+        else:
+            action = "Une surveillance à domicile peut suffire pour l'instant, avec avis médical si aggravation."
+
         return (
-            f"Niveau {urgency.value}. Orientation recommandée: {orientation}, délai: {delay}. "
-            f"Raison principale: {justification}.{question_text}"
+            f"Niveau {level_labels[urgency]}. Orientation recommandée: {orientation}. Délai: {delay}. "
+            f"{action} Raison principale: {justification}.{question_text}"
         )
 
 

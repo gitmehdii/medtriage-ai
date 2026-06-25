@@ -3,12 +3,15 @@ from threading import Lock
 from uuid import uuid4
 
 from medtriage_agent.schemas import ChatMessage
+from medtriage_agent.triage_rules import detect_answered_followups, followup_key_for_question
 
 
 @dataclass
 class Conversation:
     conversation_id: str
     turns: list[ChatMessage] = field(default_factory=list)
+    answered_followups: set[str] = field(default_factory=set)
+    pending_followups: list[str] = field(default_factory=list)
 
 
 class InMemoryConversationStore:
@@ -42,6 +45,26 @@ class InMemoryConversationStore:
             conversation.turns.append(ChatMessage(role=role, content=content))
             if len(conversation.turns) > self.max_turns:
                 conversation.turns = conversation.turns[-self.max_turns :]
+
+    def record_user_reply(self, conversation_id: str, content: str) -> None:
+        with self._lock:
+            conversation = self._items.setdefault(
+                conversation_id, Conversation(conversation_id=conversation_id)
+            )
+            answered = detect_answered_followups(content, conversation.pending_followups)
+            conversation.answered_followups.update(answered)
+            conversation.pending_followups = [
+                key for key in conversation.pending_followups if key not in answered
+            ]
+
+    def set_pending_followups(self, conversation_id: str, questions: list[str]) -> None:
+        with self._lock:
+            conversation = self._items.setdefault(
+                conversation_id, Conversation(conversation_id=conversation_id)
+            )
+            conversation.pending_followups = [
+                key for question in questions if (key := followup_key_for_question(question))
+            ]
 
     def build_symptom_context(
         self,

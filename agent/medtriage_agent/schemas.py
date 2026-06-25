@@ -27,6 +27,7 @@ class TriageRequest(BaseModel):
     antecedents: list[str] = Field(default_factory=list)
     medicaments: list[str] = Field(default_factory=list)
     allergies: list[str] = Field(default_factory=list)
+    answered_followups: list[str] = Field(default_factory=list)
     conversation_id: str | None = None
 
 

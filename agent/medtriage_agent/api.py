@@ -40,6 +40,7 @@ async def triage(request: TriageRequest) -> TriageResponse:
 @app.post("/chat", response_model=TriageResponse)
 async def chat(request: ChatRequest) -> TriageResponse:
     conversation = conversation_store.get_or_create(request.conversation_id)
+    conversation_store.record_user_reply(conversation.conversation_id, request.message)
     symptom_context = conversation_store.build_symptom_context(
         conversation=conversation,
         current_message=request.message,
@@ -49,8 +50,12 @@ async def chat(request: ChatRequest) -> TriageResponse:
         symptomes=symptom_context,
         photo_base64=request.photo_base64,
         conversation_id=conversation.conversation_id,
+        answered_followups=sorted(conversation.answered_followups),
     )
     response = await agent.handle_triage(triage_request)
     conversation_store.add_turn(conversation.conversation_id, "user", request.message)
     conversation_store.add_turn(conversation.conversation_id, "assistant", response.message)
+    conversation_store.set_pending_followups(
+        conversation.conversation_id, response.questions_complementaires
+    )
     return response
