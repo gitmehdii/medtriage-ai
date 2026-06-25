@@ -1,0 +1,64 @@
+networks:
+  medtriage-network:
+    driver: bridge
+
+services:
+  vision:
+    build: ./vision
+    ports:
+      - "8001:8001"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      AZURE_VISION_KEY: ${AZURE_VISION_KEY}
+      AZURE_VISION_ENDPOINT: ${AZURE_VISION_ENDPOINT}
+    networks:
+      - medtriage-network
+    restart: unless-stopped
+
+  ml-model:
+    build: ./ml-model
+    ports:
+      - "8002:8002"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      AZURE_ML_KEY: ${AZURE_ML_KEY}
+      AZURE_ML_ENDPOINT: ${AZURE_ML_ENDPOINT}
+    networks:
+      - medtriage-network
+    restart: unless-stopped
+
+  agent:
+    build: ./agent
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      AGENT_PORT: "8000"
+      VISION_SERVICE_URL: http://vision:8001
+      ML_SERVICE_URL: http://ml-model:8002
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    networks:
+      - medtriage-network
+    restart: unless-stopped
+    depends_on:
+      - vision
+      - ml-model
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    networks:
+      - medtriage-network
+    restart: unless-stopped
+    depends_on:
+      - agent
