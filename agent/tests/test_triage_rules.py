@@ -37,6 +37,33 @@ def test_traumatic_limb_loss_is_red():
     assert "perte de membre" in signal.summary
 
 
+def test_cut_arm_is_red():
+    request = TriageRequest(symptomes="J'ai le bras couper")
+
+    signal = evaluate_rules(request)
+
+    assert signal.urgency == UrgencyLevel.red
+    assert "perte de membre" in signal.summary
+
+
+def test_accented_cut_arm_is_red():
+    request = TriageRequest(symptomes="J'ai le bras coupé")
+
+    signal = evaluate_rules(request)
+
+    assert signal.urgency == UrgencyLevel.red
+    assert "perte de membre" in signal.summary
+
+
+def test_very_high_fever_number_before_symptom_is_orange():
+    request = TriageRequest(symptomes="J'ai 41 de fièvre")
+
+    signal = evaluate_rules(request)
+
+    assert signal.urgency == UrgencyLevel.orange
+    assert "fièvre très élevée" in signal.summary
+
+
 def test_abdominal_pain_in_older_patient_is_orange():
     request = TriageRequest(symptomes="Ca fait 1 mois que j'ai mal au ventre et j'ai 60 ans")
 

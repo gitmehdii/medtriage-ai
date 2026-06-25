@@ -24,7 +24,8 @@ RED_FLAGS = {
     r"\bvisage deforme\b": "signe possible d'AVC",
     r"\bsaignement abondant\b": "saignement abondant",
     r"\bhemorragie\b": "hémorragie",
-    r"\b(?:perdu|arrache|sectionne)\s+(?:une?\s+)?(?:jambe|bras|main|pied|membre)\b": "traumatisme majeur avec perte de membre",
+    r"\b(?:perdu|arrache|sectionne|coupe|couper)\s+(?:une?\s+|le\s+|la\s+|mon\s+|ma\s+)?(?:jambe|bras|main|pied|membre)\b": "traumatisme majeur avec perte de membre",
+    r"\b(?:jambe|bras|main|pied|membre)\s+(?:arrache|sectionne|coupe|couper)\b": "traumatisme majeur avec perte de membre",
     r"\bamputation\b": "amputation traumatique",
     r"\bmembre sectionne\b": "membre sectionné",
     r"\braideur de nuque\b": "fièvre avec raideur de nuque",
@@ -32,7 +33,7 @@ RED_FLAGS = {
 }
 
 ORANGE_FLAGS = {
-    r"\bfievre\b.*\b(40|41)\b": "fièvre très élevée",
+    r"\bfievre\b.*\b(40|41)\b|\b(40|41)\b.*\bfievre\b": "fièvre très élevée",
     r"\b39\b.*\bfievre\b|\bfievre\b.*\b39\b": "fièvre élevée",
     r"\bdeshydrat": "signe possible de déshydratation",
     r"\bplaie profonde\b": "plaie profonde",

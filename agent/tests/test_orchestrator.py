@@ -21,6 +21,11 @@ class OrangeMLModules:
         return ModuleSignal(source="vision", available=False)
 
 
+class FailingProvider:
+    async def compose_response(self, **kwargs):
+        raise RuntimeError("provider failed")
+
+
 @pytest.mark.asyncio
 async def test_orchestrator_keeps_rule_red_priority():
     orchestrator = TriageOrchestrator(StubModules(), DeterministicProvider())
@@ -49,3 +54,14 @@ async def test_orchestrator_returns_conversation_id():
     )
 
     assert response.conversation_id == "conversation-1"
+
+
+@pytest.mark.asyncio
+async def test_orchestrator_exposes_llm_fallback_signal():
+    orchestrator = TriageOrchestrator(StubModules(), FailingProvider())
+
+    response = await orchestrator.triage(TriageRequest(symptomes="Je crache du sang"))
+
+    assert response.urgence == UrgencyLevel.red
+    assert "Niveau rouge" in response.message
+    assert any(signal.source == "llm" and not signal.available for signal in response.signals)

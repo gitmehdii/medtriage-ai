@@ -22,13 +22,14 @@ services:
     ports:
       - "8000:8000"
     env_file:
+      - path: ./agent/.env
+        required: false
       - path: .env
         required: false
     environment:
       AGENT_PORT: "8000"
       VISION_SERVICE_URL: http://vision:8001
       ML_SERVICE_URL: http://medtriage-ml-model.westeurope.azurecontainer.io:8002
-      GEMINI_API_KEY: ${GEMINI_API_KEY}
     networks:
       - medtriage-network
     restart: unless-stopped
