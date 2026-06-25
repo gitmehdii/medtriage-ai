@@ -62,7 +62,7 @@ def symptomes_to_vector(symptomes_text):
     return vector
 
 
-@app.route("/ml/predict", methods=["POST"])
+@app.route("/predict", methods=["POST"])
 def predict():
     data = request.get_json()
 

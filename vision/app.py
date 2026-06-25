@@ -8,8 +8,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-AZURE_KEY = os.getenv("AZURE_KEY")
-AZURE_ENDPOINT = os.getenv("AZURE_ENDPOINT")
+AZURE_KEY = os.getenv("AZURE_VISION_KEY")
+AZURE_ENDPOINT = os.getenv("AZURE_VISION_ENDPOINT")
 
 
 def analyze_image_bytes(image_bytes):
@@ -54,7 +54,7 @@ def parse_result(raw):
     }
 
 
-@app.route("/vision/analyze", methods=["POST"])
+@app.route("/analyze", methods=["POST"])
 def analyze():
     data = request.get_json()
 
