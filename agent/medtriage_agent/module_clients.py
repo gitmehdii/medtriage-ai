@@ -30,7 +30,7 @@ class ExternalModuleClient:
         if not self.settings.vision_service_url:
             return ModuleSignal(source="vision", available=False, summary="Vision service URL not configured.")
 
-        payload = {"photo_base64": request.photo_base64}
+        payload = {"image_base64": request.photo_base64}
         return await self._post_signal(self.settings.vision_service_url, "/analyze", "vision", payload)
 
     async def _post_signal(
