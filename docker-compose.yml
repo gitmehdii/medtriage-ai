@@ -17,17 +17,6 @@ services:
       - medtriage-network
     restart: unless-stopped
 
-  ml-model:
-    build: ./ml-model
-    ports:
-      - "8002:8002"
-    env_file:
-      - path: .env
-        required: false
-    networks:
-      - medtriage-network
-    restart: unless-stopped
-
   agent:
     build: ./agent
     ports:
@@ -38,14 +27,13 @@ services:
     environment:
       AGENT_PORT: "8000"
       VISION_SERVICE_URL: http://vision:8001
-      ML_SERVICE_URL: http://ml-model:8002
+      ML_SERVICE_URL: http://medtriage-ml-model.westeurope.azurecontainer.io:8002
       GEMINI_API_KEY: ${GEMINI_API_KEY}
     networks:
       - medtriage-network
     restart: unless-stopped
     depends_on:
       - vision
-      - ml-model
 
   frontend:
     build: ./frontend
