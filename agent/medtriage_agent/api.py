@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from medtriage_agent.config import get_settings
 from medtriage_agent.llm import build_llm_provider
@@ -15,6 +16,13 @@ orchestrator = TriageOrchestrator(modules=modules, llm=llm)
 agent = build_ms_agent_runtime(MedTriageAgent(orchestrator))
 
 app = FastAPI(title=settings.app_name, version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health")
