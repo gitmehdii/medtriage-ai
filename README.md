@@ -1,6 +1,6 @@
-# 🏥 MedTriageAI — Assistant intelligent de triage médical
+# 🏥 MedTriageAI : Assistant intelligent de triage médical
 
-> Projet Azure — EPITA | Équipe de 4
+> Projet Azure - EPITA | Equipe de 4
 
 ---
 
@@ -28,12 +28,12 @@ MedTriageAI est une application web permettant à un utilisateur de décrire ses
 graph TD
     User(["👤 Utilisateur"])
 
-    subgraph Frontend["Frontend — React (port 3000)"]
+    subgraph Frontend["Frontend - React (port 3000)"]
         UI["Interface conversationnelle"]
         PhotoUpload["Upload photo (base64)"]
     end
 
-    subgraph Agent["Agent IA — FastAPI (port 8000)"]
+    subgraph Agent["Agent IA - FastAPI (port 8000)"]
         API["/chat  /triage"]
         Conv["Gestion conversation\n(InMemoryConversationStore)"]
         Orch["Orchestrateur\n(TriageOrchestrator)"]
@@ -41,12 +41,12 @@ graph TD
         LLM["LLM Provider\nGemini / Ollama / Fallback"]
     end
 
-    subgraph Vision["Vision — Flask (port 8001)"]
+    subgraph Vision["Vision - Flask (port 8001)"]
         VisionAPI["/analyze"]
         AzureCV["Azure Computer Vision API"]
     end
 
-    subgraph MLModel["ML Model — Flask (port 8002)"]
+    subgraph MLModel["ML Model - Flask (port 8002)"]
         MLApi["/predict"]
         SKLearn["Modèle sklearn (model.pkl)\nClassification symptômes → urgence"]
     end
@@ -205,4 +205,4 @@ docker-compose up --build
 
 ## 📄 Licence
 
-Projet académique — EPITA
+Projet academique - EPITA
