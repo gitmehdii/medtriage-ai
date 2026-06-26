@@ -22,19 +22,85 @@ MedTriageAI est une application web permettant à un utilisateur de décrire ses
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Architecture MVP
+
+```mermaid
+graph TD
+    User(["👤 Utilisateur"])
+
+    subgraph Frontend["Frontend — React (port 3000)"]
+        UI["Interface conversationnelle"]
+        PhotoUpload["Upload photo (base64)"]
+    end
+
+    subgraph Agent["Agent IA — FastAPI (port 8000)"]
+        API["/chat  /triage"]
+        Conv["Gestion conversation\n(InMemoryConversationStore)"]
+        Orch["Orchestrateur\n(TriageOrchestrator)"]
+        Rules["Règles déterministes\n(triage_rules)"]
+        LLM["LLM Provider\nGemini / Ollama / Fallback"]
+    end
+
+    subgraph Vision["Vision — Flask (port 8001)"]
+        VisionAPI["/analyze"]
+        AzureCV["Azure Computer Vision API"]
+    end
+
+    subgraph MLModel["ML Model — Flask (port 8002)"]
+        MLApi["/predict"]
+        SKLearn["Modèle sklearn (model.pkl)\nClassification symptômes → urgence"]
+    end
+
+    User -->|"texte + photo"| UI
+    UI --> API
+    PhotoUpload --> API
+
+    API --> Conv
+    Conv --> Orch
+    Orch --> Rules
+    Orch -->|"symptômes texte"| MLApi
+    Orch -->|"image base64\n(si photo)"| VisionAPI
+    Orch --> LLM
+
+    VisionAPI --> AzureCV
+    AzureCV -->|"caption + tags"| VisionAPI
+    VisionAPI -->|"urgence visuelle"| Orch
+
+    MLApi --> SKLearn
+    SKLearn -->|"urgence + score"| MLApi
+    MLApi -->|"signal ML"| Orch
+
+    LLM -->|"message naturel"| Orch
+    Orch -->|"TriageResponse\n(urgence, orientation, conseils)"| API
+    API -->|"réponse JSON"| UI
+    UI -->|"affichage résultat"| User
+```
+
+### Flux de décision
+
+```mermaid
+flowchart LR
+    Symptoms["Symptômes\nutilisateur"] --> Rules["Règles\ndéterministes"]
+    Symptoms --> ML["ML Model\n(sklearn)"]
+    Photo["Photo\nblessure"] --> Vision["Azure\nComputer Vision"]
+
+    Rules -->|signal| Max{"Urgence\nmaximale"}
+    ML -->|signal| Max
+    Vision -->|signal| Max
+
+    Max -->|niveau retenu| LLM["LLM\n(Gemini/Ollama)"]
+    LLM -->|message final| Response["🟢🟡🟠🔴\nOrientation + Conseils"]
+```
+
+### Structure des dossiers
 
 ```
 medtriage-ai/
-│
-├── frontend/          # Interface utilisateur (React / Streamlit)
-├── agent/             # Agent conversationnel (Microsoft Agent Framework + Gemini/Ollama)
-├── vision/            # Analyse d'image (Azure Computer Vision)
-├── ml-model/          # Modèle de classification de symptômes (Azure ML)
-├── docker/            # Containerisation (Edge scenario)
-├── docs/
-│   ├── architecture.png
-│   └── slides.pptx
+├── frontend/      # React + Vite + Tailwind (port 3000)
+├── agent/         # FastAPI + Microsoft Agent Framework (port 8000)
+├── vision/        # Flask + Azure Computer Vision (port 8001)
+├── ml-model/      # Flask + sklearn (port 8002)
+├── docker-compose.yml
 └── README.md
 ```
 
