@@ -73,3 +73,45 @@ Follow-up message:
 ## Microsoft Agent Framework boundary
 
 `medtriage_agent.ms_agent` isolates the future Microsoft Agent Framework integration. The medical triage workflow itself stays in `orchestrator.py`, so it can be tested without a specific framework runtime.
+
+## MCP server
+
+The agent package also provides a Model Context Protocol server so an MCP-compatible agent can call the MedTriage API through typed tools.
+
+Install dependencies:
+
+```bash
+cd agent
+pip install -r requirements.txt
+```
+
+Start the FastAPI agent API first:
+
+```bash
+python main.py
+```
+
+Then configure your MCP client to launch the server over stdio:
+
+```json
+{
+  "mcpServers": {
+    "medtriage-api": {
+      "command": "python",
+      "args": ["-m", "medtriage_mcp.server"],
+      "cwd": "C:\\Users\\aypie\\Documents\\1-Repo\\1-Project\\Azure-project\\medtriage-ai\\agent",
+      "env": {
+        "MEDTRIAGE_AGENT_API_URL": "http://localhost:8000"
+      }
+    }
+  }
+}
+```
+
+Available MCP tools:
+
+| Tool | Purpose |
+|---|---|
+| `health_check` | Checks whether the MedTriage agent API is reachable. |
+| `triage_patient` | Calls `POST /triage` with symptoms, optional patient context, and optional image. |
+| `chat_triage` | Calls `POST /chat` while preserving `conversation_id` and optional history. |
