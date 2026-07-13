@@ -29,6 +29,13 @@ http://localhost:8000/docs
 | Agent IA | 8000 | `http://localhost:8000` |
 | Computer Vision | 8001 | `http://localhost:8001` |
 | ML Model | 8002 | `http://localhost:8002` |
+| Medical Knowledge MCP | 8003 | `http://localhost:8003` |
+
+## Medical knowledge evidence
+
+The optional Medical Knowledge MCP service provides dated, source-linked evidence to the agent. Docker Compose sets `MEDICAL_KNOWLEDGE_SERVICE_URL=http://medical-knowledge:8003`; for local development, set it to `http://localhost:8003` after starting the service described in [the service README](../medical-knowledge-mcp/README.md).
+
+The triage API remains available if the knowledge service is down, times out, has no reviewed corpus results, or has fallback disabled. In those cases the response records unavailable evidence and returns no invented citations. Operational procedures for corpus import/update, trusted-domain review, source verification, and rollback are in the service README.
 
 ## Main endpoint
 

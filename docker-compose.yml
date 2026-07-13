@@ -30,11 +30,33 @@ services:
       AGENT_PORT: "8000"
       VISION_SERVICE_URL: http://vision:8001
       ML_SERVICE_URL: http://medtriage-ml-model.westeurope.azurecontainer.io:8002
+      MEDICAL_KNOWLEDGE_SERVICE_URL: http://medical-knowledge:8003
     networks:
       - medtriage-network
     restart: unless-stopped
     depends_on:
-      - vision
+      vision:
+        condition: service_started
+
+  medical-knowledge:
+    build:
+      context: .
+      dockerfile: medical-knowledge-mcp/Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      MEDICAL_KNOWLEDGE_PORT: "8003"
+      MEDICAL_KNOWLEDGE_FRESHNESS_DAYS: "365"
+      MEDICAL_KNOWLEDGE_FALLBACK_TIMEOUT_SECONDS: "5"
+    networks:
+      - medtriage-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8003/health')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
 
   frontend:
     build: ./frontend

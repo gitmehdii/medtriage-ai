@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     vision_service_url: str = ""
     ml_service_url: str = ""
     request_timeout_seconds: float = 15
+    medical_knowledge_service_url: str | None = None
+    medical_knowledge_timeout_seconds: float = Field(default=5, gt=0)
     max_conversation_turns: int = 12
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")

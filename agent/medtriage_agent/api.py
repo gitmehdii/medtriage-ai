@@ -1,19 +1,35 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from medtriage_agent.config import get_settings
+from medtriage_agent.config import Settings, get_settings
 from medtriage_agent.conversation import InMemoryConversationStore
 from medtriage_agent.llm import build_llm_provider
 from medtriage_agent.module_clients import ExternalModuleClient
 from medtriage_agent.ms_agent import MedTriageAgent, build_ms_agent_runtime
 from medtriage_agent.orchestrator import TriageOrchestrator
 from medtriage_agent.schemas import ChatRequest, TriageRequest, TriageResponse
+from medtriage_mcp.knowledge_client import MedicalKnowledgeApiClient
+
+
+def _build_knowledge_client(settings: Settings) -> MedicalKnowledgeApiClient | None:
+    if not settings.medical_knowledge_service_url:
+        return None
+    return MedicalKnowledgeApiClient(
+        base_url=settings.medical_knowledge_service_url,
+        timeout_seconds=settings.medical_knowledge_timeout_seconds,
+    )
 
 
 settings = get_settings()
 modules = ExternalModuleClient(settings)
 llm = build_llm_provider(settings)
-orchestrator = TriageOrchestrator(modules=modules, llm=llm)
+knowledge_client = _build_knowledge_client(settings)
+orchestrator = TriageOrchestrator(
+    modules=modules,
+    llm=llm,
+    knowledge_client=knowledge_client,
+    knowledge_timeout_seconds=settings.medical_knowledge_timeout_seconds,
+)
 agent = build_ms_agent_runtime(MedTriageAgent(orchestrator))
 conversation_store = InMemoryConversationStore(max_turns=settings.max_conversation_turns)
 

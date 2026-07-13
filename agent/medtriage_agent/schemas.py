@@ -3,6 +3,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from medical_knowledge_mcp.models import Citation
+
 
 class UrgencyLevel(str, Enum):
     green = "green"
@@ -63,3 +65,5 @@ class TriageResponse(BaseModel):
     message: str
     disclaimer_medical: str
     signals: list[ModuleSignal] = Field(default_factory=list)
+    citations: list[Citation] = Field(default_factory=list)
+    metadata: dict[str, Any] = Field(default_factory=dict)
