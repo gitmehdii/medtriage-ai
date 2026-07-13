@@ -1,6 +1,6 @@
 # Medical Knowledge MCP service
 
-This container exposes the validated medical-knowledge HTTP API on port 8003. It searches its local corpus first and only uses configured, reviewed official-source fallback adapters. The production corpus intentionally starts empty: do not add source content until it has completed the review process below.
+This container exposes the validated medical-knowledge HTTP API on port 8003. It searches its local corpus first, then can query the official search pages of HAS, WHO and NHS when local evidence is insufficient. The starter corpus contains a deliberately limited set of reviewed HAS and WHO entries for chest-pain and stroke emergency signals; extend it only through the governance process below.
 
 ## Run
 
@@ -31,7 +31,8 @@ All values are non-secret environment settings:
 | `MEDICAL_KNOWLEDGE_CORPUS_PATH` | `medical_knowledge_mcp/data/sources.json` | Local JSON corpus path. |
 | `MEDICAL_KNOWLEDGE_FRESHNESS_DAYS` | `365` | Maximum age of verification before a local source is excluded. |
 | `MEDICAL_KNOWLEDGE_ALLOWED_DOMAINS` | HAS, Ministry of Health, ameli, WHO domains | Reviewed official source allow-list. |
-| `MEDICAL_KNOWLEDGE_FALLBACK_BASE_URLS` | empty | Optional official-source fallback endpoints; empty disables fallback. |
+| `MEDICAL_KNOWLEDGE_FALLBACK_SOURCES` | `has,who,nhs` | Built-in official website connectors. Empty disables network fallback. |
+| `MEDICAL_KNOWLEDGE_FALLBACK_BASE_URLS` | empty | Optional compatible `/search` endpoints for reviewed internal adapters. |
 | `MEDICAL_KNOWLEDGE_FALLBACK_TIMEOUT_SECONDS` | `5` | Per-fallback timeout. |
 
 `MEDICAL_KNOWLEDGE_SERVICE_URL=http://medical-knowledge:8003` is set on the agent by Docker Compose. No credentials are required or stored in this service.
@@ -60,4 +61,4 @@ Before import or a fallback-domain change, a reviewer must confirm that the orga
 
 Verify a release with `/health` and fixture-backed searches; every returned result must retain its source URL, publication/update date, verification date, and retrieval timestamp. If a corpus revision is wrong, restore the last reviewed `sources.json`, rerun the import checks above, and rebuild `medical-knowledge`. Do not edit data in a running container.
 
-If this service is unavailable, the agent continues triage without knowledge evidence and reports the evidence status as unavailable. It must not invent citations or block a triage response. An empty local corpus and disabled fallback return no evidence rather than attempting unreviewed network access.
+If an official site is unavailable, the connector is skipped and the other sources/local corpus remain usable. If the whole service is unavailable, the agent continues triage without knowledge evidence and reports the evidence status as unavailable. The connectors only use the controlled symptom terms from the query in outbound URLs; they do not forward the patient narrative.

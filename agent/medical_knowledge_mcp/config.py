@@ -9,7 +9,7 @@ class MedicalKnowledgeSettings(BaseSettings):
     corpus_path: str = Field(default="medical_knowledge_mcp/data/sources.json", validation_alias=AliasChoices("MEDICAL_KNOWLEDGE_CORPUS_PATH", "corpus_path"))
     freshness_days: int = Field(default=365, ge=1, validation_alias=AliasChoices("MEDICAL_KNOWLEDGE_FRESHNESS_DAYS", "freshness_days"))
     allowed_domains: list[str] = Field(
-        default_factory=lambda: ["has-sante.fr", "sante.gouv.fr", "ameli.fr", "who.int"],
+        default_factory=lambda: ["has-sante.fr", "sante.gouv.fr", "ameli.fr", "who.int", "nhs.uk"],
         validation_alias=AliasChoices("MEDICAL_KNOWLEDGE_ALLOWED_DOMAINS", "allowed_domains"),
     )
     fallback_timeout_seconds: float = Field(
@@ -20,6 +20,10 @@ class MedicalKnowledgeSettings(BaseSettings):
     fallback_base_urls: list[str] = Field(
         default_factory=list,
         validation_alias=AliasChoices("MEDICAL_KNOWLEDGE_FALLBACK_BASE_URLS", "fallback_base_urls"),
+    )
+    fallback_sources: str = Field(
+        default="has,who,nhs",
+        validation_alias=AliasChoices("MEDICAL_KNOWLEDGE_FALLBACK_SOURCES", "fallback_sources"),
     )
     fallback_reliability_threshold: float = Field(
         default=0.7,

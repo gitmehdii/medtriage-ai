@@ -1,4 +1,87 @@
 {
-  "sources": [],
-  "red_flags": []
+  "sources": [
+    {
+      "source_id": "has-infarctus-myocarde-2007",
+      "title": "Infarctus du myocarde : réflexes d'urgence",
+      "organization": "Haute Autorité de Santé",
+      "country": "FR",
+      "speciality": "emergency medicine",
+      "url": "https://www.has-sante.fr/jcms/c_532640/fr/la-has-s-attaque-a-l-infarctus-du-myocarde",
+      "publication_date": "2007-05-22",
+      "last_update_date": "2007-05-22",
+      "last_verified_at": "2026-07-13T00:00:00+00:00",
+      "content_hash": "sha256:2e4693efb47667335b1b564f9205aedbe546ed364cc552e5061bec3e7620cb4d",
+      "active": true,
+      "excerpt": "La HAS indique qu'une douleur thoracique intense et prolongée impose d'appeler immédiatement le 15. Une douleur en étau pouvant irradier vers les bras ou la mâchoire, avec nausées, sueurs ou essoufflement, doit être considérée comme un signal d'urgence.",
+      "terms": ["douleur thoracique", "infarctus", "poitrine", "étau", "essoufflement", "urgence", "15", "112"]
+    },
+    {
+      "source_id": "has-avc-signes-alerte-2025",
+      "title": "Accident vasculaire cérébral : signes d'alerte",
+      "organization": "Haute Autorité de Santé",
+      "country": "FR",
+      "speciality": "neurology",
+      "url": "https://www.has-sante.fr/jcms/p_3701212/fr/accident-vasculaire-cerebral-des-signes-d-alerte-a-votre-retour-a-domicile",
+      "publication_date": "2025-10-28",
+      "last_update_date": "2025-10-28",
+      "last_verified_at": "2026-07-13T00:00:00+00:00",
+      "content_hash": "sha256:e0c451e5b943d7e892fa060066949b076b5046c0250981dbc0966f2adfacae26",
+      "active": true,
+      "excerpt": "La HAS décrit comme signes d'alerte d'un AVC d'apparition brutale une faiblesse ou paralysie d'un côté, une difficulté à parler, un trouble de l'équilibre, une perte de vision ou un mal de tête très intense. Même si les signes disparaissent, il faut appeler immédiatement le 15.",
+      "terms": ["AVC", "accident vasculaire cérébral", "visage", "bras", "parole", "équilibre", "vision", "mal de tête", "15", "urgence"]
+    },
+    {
+      "source_id": "who-stroke-signs-2025",
+      "title": "Stroke: symptoms and emergency response",
+      "organization": "World Health Organization",
+      "country": "FR",
+      "speciality": "neurology",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/stroke",
+      "publication_date": "2025-12-19",
+      "last_update_date": "2025-12-19",
+      "last_verified_at": "2026-07-13T00:00:00+00:00",
+      "content_hash": "sha256:8dcbb21a52e76d751508100d3c0ff200f67d0ac209b7d5267e14ef4dff3b482c",
+      "active": true,
+      "excerpt": "L'OMS classe l'AVC comme une urgence médicale. Les signes possibles comprennent un vertige ou trouble soudain de l'équilibre, une perte soudaine de vision, une déformation du visage, une faiblesse d'un bras et un trouble de la parole.",
+      "terms": ["stroke", "AVC", "vertige", "équilibre", "vision", "visage", "bras", "parole", "urgence"]
+    },
+    {
+      "source_id": "has-douleur-thoracique-aigue-2009",
+      "title": "Douleur thoracique aiguë : urgences à écarter",
+      "organization": "Haute Autorité de Santé",
+      "country": "FR",
+      "speciality": "emergency medicine",
+      "url": "https://www.has-sante.fr/upload/docs/application/pdf/2009-03/rapport_rx_thorax.pdf",
+      "publication_date": "2009-02-01",
+      "last_update_date": "2009-02-01",
+      "last_verified_at": "2026-07-13T00:00:00+00:00",
+      "content_hash": "sha256:7bb8cd2dea95ee0afbae358903d50247ea0dcb4acd6d140485ae657ed5905558",
+      "active": true,
+      "excerpt": "La HAS rappelle que, devant une douleur thoracique aiguë, plusieurs urgences vitales doivent rapidement être écartées, notamment l'infarctus du myocarde, l'embolie pulmonaire, le pneumothorax et la dissection aortique.",
+      "terms": ["douleur thoracique", "infarctus", "embolie pulmonaire", "pneumothorax", "dissection aortique", "urgence"]
+    }
+  ],
+  "red_flags": [
+    {
+      "symptom": "douleur thoracique",
+      "severity": "critical",
+      "action": "Appeler immédiatement le 15 ou le 112.",
+      "evidence_excerpt": "Une douleur thoracique intense et prolongée, notamment avec irradiation, sueurs, nausées ou essoufflement, nécessite une évaluation urgente.",
+      "source_id": "has-infarctus-myocarde-2007"
+    },
+    {
+      "symptom": "AVC",
+      "severity": "critical",
+      "action": "Appeler immédiatement le 15, même si les signes ont disparu.",
+      "evidence_excerpt": "Une faiblesse brutale d'un côté, un trouble de la parole, un trouble de l'équilibre, une perte de vision ou un mal de tête brutal peuvent signaler un AVC.",
+      "source_id": "has-avc-signes-alerte-2025"
+    },
+    {
+      "symptom": "stroke",
+      "severity": "critical",
+      "action": "Treat as a medical emergency and seek immediate emergency care.",
+      "evidence_excerpt": "WHO identifies sudden balance problems, vision loss, facial droop, arm weakness and speech difficulty as possible stroke signs.",
+      "source_id": "who-stroke-signs-2025"
+    }
+  ]
 }

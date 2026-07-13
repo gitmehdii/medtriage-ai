@@ -48,6 +48,7 @@ services:
       MEDICAL_KNOWLEDGE_PORT: "8003"
       MEDICAL_KNOWLEDGE_FRESHNESS_DAYS: "365"
       MEDICAL_KNOWLEDGE_FALLBACK_TIMEOUT_SECONDS: "5"
+      MEDICAL_KNOWLEDGE_FALLBACK_SOURCES: "has,who,nhs"
     networks:
       - medtriage-network
     restart: unless-stopped
